@@ -21,3 +21,7 @@ pnpm create next-app -- --example progressive-web-app progressive-web-app
 ```
 
 Deploy it to the cloud with [Vercel](https://vercel.com/new?utm_source=github&utm_medium=readme&utm_campaign=next-example) ([Documentation](https://nextjs.org/docs/deployment)).
+
+## Reference
+[Storybook First な開発のススメ](https://blog.ojisan.io/storybook-first-develop/)
+[ReactのSuspense対応非同期処理を手書きするハンズオン](https://zenn.dev/uhyo/books/react-concurrent-handson/viewer)
