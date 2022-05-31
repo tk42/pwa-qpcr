@@ -263,7 +263,7 @@ export class Experiment {
     create_at?: number = 0;
     update_at?: number = 0;
     version?: number = 0;
-    sheets?: Sheet[] = [];
+    sheets: Sheet[] = [];
     delete?: boolean = false;
 
     constructor(init?: Partial<Experiment>) {
@@ -279,7 +279,7 @@ export class Experiment {
         return JSON.parse(localStorage.getItem(Experiment.storage_key) || "[]");
     }
 
-    LoadItem(key: string): Experiment | undefined {
+    static LoadItem(key: string): Experiment | undefined {
         return Experiment.LoadItems().find(e => e.id === key);
     }
 
@@ -312,5 +312,26 @@ export class Experiment {
         })
         ex.SaveItem()
         return ex
+    }
+
+    AddSheet(titleText: string): Sheet {
+        const sheet = new Sheet({
+            id: hash(),
+            parent_id: this.id,
+            name: titleText,
+            no: this.sheets.length,
+            lock: false,
+            well: this.well!,
+            version: 0,
+            cells: [],
+            theme: DEFAULT_THEME,
+            style: DEFAULT_STYLE,
+            create_at: now(),
+            update_at: now(),
+            delete: false,
+        })
+        this.sheets.push(sheet)
+        this.SaveItem()
+        return sheet
     }
 }

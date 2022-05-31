@@ -21,6 +21,7 @@ type HeaderConfig = {
     title: string
     left: JSX.Element,
     right: JSX.Element,
+    enabledSearchBox: boolean,
 }
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
@@ -32,8 +33,6 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 
 // (2) Types層
 export type ContainerProps = {
-    headerPage: HeaderPage
-    handleHeaderPage: (value: number) => void
 }
 type Props = {
     config: HeaderConfig
@@ -51,7 +50,7 @@ const Component: React.FC<Props> = props => (
             >
                 {props.config.title}
             </Typography>
-            <SearchBox {...{ headerPage: props.headerPage }} />
+            {(props.config.enabledSearchBox) ? <SearchBox /> : <></>}
             {props.config.right}
         </StyledToolbar>
     </AppBar>
@@ -67,34 +66,41 @@ export const Container: React.FC<ContainerProps> = props => {
     const router = useRouter();
 
     let config: HeaderConfig;
-    switch (props.headerPage) {
-        case HeaderPage.Experiments:
+    switch (router.pathname) {
+        case "/":
             config = {
                 left: <></>,
-                right: <AddItemModal headerPage={props.headerPage} />,
+                right: <AddItemModal headerPage={HeaderPage.Experiments} />,
                 title: 'Experiments',
+                enabledSearchBox: true,
             }
             break;
-        case HeaderPage.Sheets:
+        case "/experiments/[id]":
             config = {
                 left: <Box onClick={() => { router.back() }} ><ArrowBackIosIcon /></Box>,
-                right: <AddItemModal headerPage={props.headerPage} />,
+                right: <AddItemModal headerPage={HeaderPage.Sheets} />,
                 title: 'Sheets',
+                enabledSearchBox: true,
             }
             break;
-        case HeaderPage.EditSheet:
+        case "/edit/[id]":
             config = {
                 left: <Box onClick={() => { router.back() }} ><ArrowBackIosIcon /></Box>,
                 right: <Link href="/" ><ColorizeOutlinedIcon /></Link>,
                 title: 'Edit Sheet',
+                enabledSearchBox: false,
             }
             break;
-        case HeaderPage.TraceSheet:
+        case "/trace/[id]":
             config = {
                 left: <Box onClick={() => { router.back() }} ><ArrowBackIosIcon /></Box>,
                 right: <></>,
                 title: 'Trace Sheet',
+                enabledSearchBox: false,
             }
+            break;
+        default:
+            console.warn("Unknown pathname", router.pathname)
             break;
     }
 

@@ -2,21 +2,25 @@
 // https://qiita.com/Takepepe/items/41e3e7a2f612d7eb094a
 // https://blog.ojisan.io/storybook-first-develop/
 // (1) import層
-import React, { useState, useEffect, Suspense } from 'react'
+import React, { useState, useEffect } from 'react'
+import Link from 'next/link'
 import styled from 'styled-components'
+
+import ParsedUrlQuery, { useRouter } from 'next/router';
 import List from '@mui/material/List';
-import { Experiment } from '../components/item';
+import { Experiment, Sheet } from '../../components/item';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import BiotechOutlinedIcon from '@mui/icons-material/BiotechOutlined';
 
-
 // (2) Types層
 type ContainerProps = {
+
 }
 type Props = {
-    experiments: Experiment[]
+    id: string
+    experiment: Experiment
 } & ContainerProps
 // (3) DOM層
 const Component: React.FC<Props> = props => (
@@ -24,10 +28,13 @@ const Component: React.FC<Props> = props => (
         sx={{ width: '100%' }}
         component="nav">
         {
-            props.experiments.map(e => {
+            props.experiment.sheets.map(e => {
                 return (
-                    <ListItemButton onClick={() => {
-                    }}>
+                    <ListItemButton
+                        href={`/sheets/${e.id}`}
+                        component="a"
+                        LinkComponent={Link}
+                    >
                         <ListItemIcon>
                             <BiotechOutlinedIcon />
                         </ListItemIcon>
@@ -45,17 +52,25 @@ const StyledComponent = styled(Component)`
   }
 `
 // (5) Container層
-export const Container: React.FC<ContainerProps> = props => {
-    const [experiments, setExperiments] = useState<Experiment[]>();
+const Container: React.FC<ContainerProps> = props => {
+    const router = useRouter();
+    const { id } = router.query
 
-    useEffect(() => {
-        setExperiments(Experiment.LoadItems());
-    }, [experiments]);
+    if (typeof id != "string") {
+        return <></>
+    }
 
-    return (experiments === undefined) ? <></> : (
-        <StyledComponent {...{
-            experiments,
-            ...props,
-        }} />
-    )
+    const experiment = Experiment.LoadItem(id);
+
+    if (experiment === undefined) {
+        return <></>
+    }
+
+    return <StyledComponent {...{
+        id,
+        experiment,
+        ...props
+    }} />
 }
+
+export default Container;

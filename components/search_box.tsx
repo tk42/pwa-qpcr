@@ -32,10 +32,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 // (2) Types層
 export type ContainerProps = {
-    headerPage: HeaderPage
 }
 type Props = {
-
 } & ContainerProps
 
 // (3) DOM層
@@ -72,6 +70,9 @@ const StyledComponent = styled('div')(({ theme }) => (
 
 // (5) Container層
 export const Container: React.FC<ContainerProps> = props => {
-    const enabled: boolean = (props.headerPage === HeaderPage.Experiments || props.headerPage === HeaderPage.Sheets)
-    return (enabled) ? <StyledComponent {...props} ><Component {...props} /></StyledComponent> : <></>
+    return (
+        <StyledComponent {...props} >
+            <Component {...props} />
+        </StyledComponent>
+    )
 }
